@@ -53,7 +53,7 @@ func findFiles(dir string) []string {
 }
 
 func skipped(name string, dir bool) bool {
-	skipDir := []string{"node_modules"}
+	skipDir := []string{"node_modules", ".git", "coverage"}
 	skipFiles := []string{"annotations.go", "annotations", "README.md", "Jenkinsfile"}
 	ref := skipFiles
 
