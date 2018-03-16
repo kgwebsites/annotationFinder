@@ -1,3 +1,2 @@
-// TODO: Create tests
-// TODO: Add flags to include settings config file
-// TODO: Create default settings config file
+// TODO: Increase code coverage. Currently at 63.3%
+// TODO: Add inclusion and exclusion flags to specify directories to include / exclude

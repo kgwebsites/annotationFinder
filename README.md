@@ -3,7 +3,6 @@ Executable file which finds all your // TODO , // FIXME , // REFACTOR annotation
 
 ## ANNOTATIONS
 ### TODOS:
-* [Create tests](./sample/repoAnnotations)
-* [Add flags to include settings config file](./sample/repoAnnotations)
-* [Create default settings config file](./sample/repoAnnotations)
+* [Increase code coverage. Currently at 63.3%](./sample/repoAnnotations)
+* [Add inclusion and exclusion flags to specify directories to include / exclude](./sample/repoAnnotations)
 
