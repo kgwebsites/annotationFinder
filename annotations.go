@@ -7,6 +7,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -15,13 +16,20 @@ import (
 	"strings"
 )
 
+var dirvar string
+
+func init() {
+	flag.StringVar(&dirvar, "dir", "./", "Directory of files you wish to search for annotations")
+}
+
 type annotation struct {
 	path string
 	todo string
 }
 
 func main() {
-	f := findFiles("./")
+	flag.Parse()
+	f := findFiles(dirvar)
 	a := findAnnotations(f)
 	l := buildList(a)
 	appendReadme(l)

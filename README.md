@@ -3,7 +3,9 @@ Executable file which finds all your // TODO , // FIXME , // REFACTOR annotation
 
 ## ANNOTATIONS
 ### TODOS:
-* [Create tests](annotations.go)
-* [Add flags to change directory](annotations.go)
-* [Add flags to include settings config file](annotations.go)
-* [Create default settings config file](annotations.go)
+* [This one has multiple todos!](sample/multipleAnnotations.js)
+* [This is a todo item](sample/sample.js)
+
+### FIXME:
+* [This one has multiple todos!](sample/multipleAnnotations.js)
+
