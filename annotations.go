@@ -21,10 +21,10 @@ type annotation struct {
 }
 
 func main() {
-	files := findFiles("./")
-	notes := findAnnotations(files)
-	list := buildList(notes, files)
-	appendReadme(list)
+	f := findFiles("./")
+	a := findAnnotations(f)
+	l := buildList(a)
+	appendReadme(l)
 }
 
 func findFiles(dir string) []string {
@@ -96,7 +96,7 @@ func findAnnotations(files []string) map[string][]annotation {
 	return annotations
 }
 
-func buildList(notes map[string][]annotation, files []string) string {
+func buildList(notes map[string][]annotation) string {
 	list := "\n## ANNOTATIONS\n"
 	for i, n := range notes {
 		if len(n) > 0 {
