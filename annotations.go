@@ -1,8 +1,3 @@
-// TODO: Create tests
-// TODO: Add flags to change directory
-// TODO: Add flags to include settings config file
-// TODO: Create default settings config file
-
 package main
 
 import (
@@ -16,10 +11,12 @@ import (
 	"strings"
 )
 
-var dirvar string
+var dirflag string
+var fileflag string
 
 func init() {
-	flag.StringVar(&dirvar, "dir", "./", "Directory of files you wish to search for annotations")
+	flag.StringVar(&dirflag, "dir", "./", "Directory of files you wish to search for annotations")
+	flag.StringVar(&fileflag, "file", "", "Single file you wish to search for annotations")
 }
 
 type annotation struct {
@@ -29,7 +26,7 @@ type annotation struct {
 
 func main() {
 	flag.Parse()
-	f := findFiles(dirvar)
+	f := findFiles(dirflag)
 	a := findAnnotations(f)
 	l := buildList(a)
 	appendReadme(l)
@@ -38,23 +35,27 @@ func main() {
 func findFiles(dir string) []string {
 	files := []string{}
 
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			fmt.Printf("%v\n", err)
-			return err
-		}
-		if !skipped(info.Name(), true) {
-			if !skipped(info.Name(), false) {
-				files = append(files, path)
+	if fileflag != "" {
+		files = append(files, fileflag)
+	} else {
+		err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				fmt.Printf("%v\n", err)
+				return err
 			}
-		} else {
-			return filepath.SkipDir
-		}
-		return nil
-	})
+			if !skipped(info.Name(), true) {
+				if !skipped(info.Name(), false) {
+					files = append(files, path)
+				}
+			} else {
+				return filepath.SkipDir
+			}
+			return nil
+		})
 
-	if err != nil {
-		fmt.Printf("error walking the path %q: %v\n", dir, err)
+		if err != nil {
+			fmt.Printf("error walking the path %q: %v\n", dir, err)
+		}
 	}
 
 	return files
@@ -62,7 +63,7 @@ func findFiles(dir string) []string {
 
 func skipped(name string, dir bool) bool {
 	skipDir := []string{"node_modules", ".git", "coverage"}
-	skipFiles := []string{"annotations.go", "annotations", "README.md", "Jenkinsfile"}
+	skipFiles := []string{"annotations.go", "annotations_test.go", "annotations", "README.md", "Jenkinsfile", "cover.out", "debug", "debug.test", "LICENSE"}
 	ref := skipFiles
 
 	if dir {

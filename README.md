@@ -3,9 +3,7 @@ Executable file which finds all your // TODO , // FIXME , // REFACTOR annotation
 
 ## ANNOTATIONS
 ### TODOS:
-* [This one has multiple todos!](sample/multipleAnnotations.js)
-* [This is a todo item](sample/sample.js)
-
-### FIXME:
-* [This one has multiple todos!](sample/multipleAnnotations.js)
+* [Create tests](./sample/repoAnnotations)
+* [Add flags to include settings config file](./sample/repoAnnotations)
+* [Create default settings config file](./sample/repoAnnotations)
 
