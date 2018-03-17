@@ -13,10 +13,12 @@ import (
 
 var dirflag string
 var fileflag string
+var outputflag string
 
 func init() {
 	flag.StringVar(&dirflag, "dir", "./", "Directory of files you wish to search for annotations")
 	flag.StringVar(&fileflag, "file", "", "Single file you wish to search for annotations")
+	flag.StringVar(&outputflag, "o", "README.md", "Markdown file you wish append annotations to")
 }
 
 type annotation struct {
@@ -29,7 +31,7 @@ func main() {
 	f := findFiles(dirflag)
 	a := findAnnotations(f)
 	l := buildList(a)
-	appendReadme(l)
+	output(l)
 }
 
 func findFiles(dir string) []string {
@@ -119,16 +121,16 @@ func buildList(notes map[string][]annotation) string {
 	return list
 }
 
-func appendReadme(list string) {
+func output(list string) {
 	// Create README.md if nonexistant
-	f, err := os.OpenFile("README.md", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	f, err := os.OpenFile(outputflag, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	if err == nil {
 		// Save old file data
-		old, e := ioutil.ReadFile("README.md")
+		old, e := ioutil.ReadFile(outputflag)
 		if e != nil {
 			fmt.Println(e)
 		}
@@ -137,9 +139,9 @@ func appendReadme(list string) {
 		// Append new list to new README.md String.
 		readme := removed[0] + list
 		// Remove current README.md file
-		os.Remove("README.md")
+		os.Remove(outputflag)
 		// Create new README.md file
-		ioutil.WriteFile("README.md", []byte(readme), 0666)
+		ioutil.WriteFile(outputflag, []byte(readme), 0666)
 	} else {
 		log.Fatal(err)
 	}
