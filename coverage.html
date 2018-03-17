@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">./annotations.go (89.4%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "bufio"
+        "flag"
+        "fmt"
+        "io/ioutil"
+        "log"
+        "os"
+        "path/filepath"
+        "strings"
+)
+
+var dirflag string
+var fileflag string
+var outputflag string
+
+func init() <span class="cov8" title="1">{
+        flag.StringVar(&amp;dirflag, "dir", "./", "Directory of files you wish to search for annotations")
+        flag.StringVar(&amp;fileflag, "file", "", "Single file you wish to search for annotations")
+        flag.StringVar(&amp;outputflag, "o", "README.md", "Markdown file you wish append annotations to")
+}</span>
+
+type annotation struct {
+        path string
+        todo string
+}
+
+func main() <span class="cov8" title="1">{
+        flag.Parse()
+        f := findFiles(dirflag)
+        a := findAnnotations(f)
+        l := buildList(a)
+        output(l)
+}</span>
+
+func findFiles(dir string) []string <span class="cov8" title="1">{
+        files := []string{}
+
+        if fileflag != "" </span><span class="cov8" title="1">{
+                files = append(files, fileflag)
+        }</span><span class="cov8" title="1"> else {
+                err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error </span><span class="cov8" title="1">{
+                        if err != nil </span><span class="cov0" title="0">{
+                                fmt.Printf("%v\n", err)
+                                return err
+                        }</span>
+                        <span class="cov8" title="1">if !skipped(info.Name(), true) </span><span class="cov8" title="1">{
+                                if !skipped(info.Name(), false) </span><span class="cov8" title="1">{
+                                        files = append(files, path)
+                                }</span>
+                        }<span class="cov8" title="1"> else {
+                                return filepath.SkipDir
+                        }</span>
+                        <span class="cov8" title="1">return nil</span>
+                })
+
+                <span class="cov8" title="1">if err != nil </span><span class="cov0" title="0">{
+                        fmt.Printf("error walking the path %q: %v\n", dir, err)
+                }</span>
+        }
+
+        <span class="cov8" title="1">return files</span>
+}
+
+func skipped(name string, dir bool) bool <span class="cov8" title="1">{
+        skipDir := []string{"node_modules", ".git", "coverage"}
+        skipFiles := []string{"annotations.go", "annotations_test.go", "annotations", "README.md", "Jenkinsfile", "cover.out", "debug", "debug.test", "LICENSE"}
+        ref := skipFiles
+
+        if dir </span><span class="cov8" title="1">{
+                ref = skipDir
+        }</span>
+
+        <span class="cov8" title="1">for _, s := range ref </span><span class="cov8" title="1">{
+                if s == name </span><span class="cov8" title="1">{
+                        return true
+                }</span>
+        }
+        <span class="cov8" title="1">return false</span>
+}
+
+func findAnnotations(files []string) map[string][]annotation <span class="cov8" title="1">{
+        annotations := map[string][]annotation{
+                "TODOS":    {},
+                "FIXME":    {},
+                "REFACTOR": {},
+        }
+        for _, file := range files </span><span class="cov8" title="1">{
+                openFile, _ := os.Open(file)
+                scanner := bufio.NewScanner(openFile)
+                for scanner.Scan() </span><span class="cov8" title="1">{
+                        if strings.Contains(string(scanner.Text()), "TODO:") </span><span class="cov8" title="1">{
+                                annotations["TODOS"] = append(annotations["TODOS"],
+                                        annotation{path: file, todo: strings.TrimPrefix(string(scanner.Text()), "// TODO: ")})
+                        }</span>
+                        <span class="cov8" title="1">if strings.Contains(string(scanner.Text()), "FIXME:") </span><span class="cov8" title="1">{
+                                annotations["FIXME"] = append(annotations["FIXME"],
+                                        annotation{path: file, todo: strings.TrimPrefix(string(scanner.Text()), "// FIXME: ")})
+                        }</span>
+                        <span class="cov8" title="1">if strings.Contains(string(scanner.Text()), "REFACTOR") </span><span class="cov8" title="1">{
+                                annotations["REFACTOR"] = append(annotations["REFACTOR"],
+                                        annotation{path: file, todo: strings.TrimPrefix(string(scanner.Text()), "// REFACTOR: ")})
+                        }</span>
+                }
+        }
+        <span class="cov8" title="1">return annotations</span>
+}
+
+func buildList(notes map[string][]annotation) string <span class="cov8" title="1">{
+        list := "\n## ANNOTATIONS\n"
+        for i, n := range notes </span><span class="cov8" title="1">{
+                if len(n) &gt; 0 </span><span class="cov8" title="1">{
+                        list = list + "### " + i + ":\n"
+                        for _, a := range n </span><span class="cov8" title="1">{
+                                list = list + "* [" + a.todo + "](" + a.path + ")\n"
+                        }</span>
+                        <span class="cov8" title="1">list = list + "\n"</span>
+                }
+        }
+        <span class="cov8" title="1">return list</span>
+}
+
+func output(list string) <span class="cov8" title="1">{
+        // Create README.md if nonexistant
+        f, err := os.OpenFile(outputflag, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+
+        <span class="cov8" title="1">if err == nil </span><span class="cov8" title="1">{
+                // Save old file data
+                old, e := ioutil.ReadFile(outputflag)
+                if e != nil </span><span class="cov0" title="0">{
+                        fmt.Println(e)
+                }</span>
+                // Recreate README.md string with old list removed
+                <span class="cov8" title="1">removed := strings.Split(string(old), "\n## ANNOTATIONS")
+                // Append new list to new README.md String.
+                readme := removed[0] + list
+                // Remove current README.md file
+                os.Remove(outputflag)
+                // Create new README.md file
+                ioutil.WriteFile(outputflag, []byte(readme), 0666)</span>
+        }<span class="cov0" title="0"> else {
+                log.Fatal(err)
+        }</span>
+        <span class="cov8" title="1">if err := f.Close(); err != nil </span><span class="cov0" title="0">{
+                log.Fatal(err)
+        }</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

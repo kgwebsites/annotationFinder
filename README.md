@@ -3,6 +3,5 @@ Executable file which finds all your // TODO , // FIXME , // REFACTOR annotation
 
 ## ANNOTATIONS
 ### TODOS:
-* [Increase code coverage. Currently at 63.3%](./sample/repoAnnotations)
-* [Add inclusion and exclusion flags to specify directories to include / exclude](./sample/repoAnnotations)
+* [Add configuration settings and settings flag](./sample/repoAnnotations)
 

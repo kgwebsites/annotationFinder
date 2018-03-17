@@ -1,9 +1,18 @@
 package main
 
 import (
+	"flag"
+	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	flag.Parse()
+	main()
+	os.Exit(m.Run())
+}
 
 func TestFindFiles(t *testing.T) {
 	f := findFiles("./testdata")
@@ -20,8 +29,16 @@ func TestFindFiles(t *testing.T) {
 	}
 
 	if e != true {
-		t.Errorf("Expected to find '/testdata/file1' within the files")
+		t.Errorf("Expected to find '/testdata/foo' within the files")
 	}
+
+	// Test for file -flag
+	fileflag = "./testdata/foo"
+	fi := findFiles("./testdata")
+	if fi[0] != "./testdata/foo" {
+		t.Errorf("Expected to return flagged file")
+	}
+	fileflag = ""
 }
 
 func TestSkipped(t *testing.T) {
@@ -58,4 +75,24 @@ func TestBuildList(t *testing.T) {
 	if strings.Contains(l, "[foo]") != true {
 		t.Errorf("Expected the list to have foo listed in the TODOS")
 	}
+}
+
+func read() (file []byte, err error) {
+	return ioutil.ReadFile("README.md")
+}
+
+func TestOutput(t *testing.T) {
+	old, _ := read()
+	output("foo")
+	new, _ := read()
+	end := new[len(new)-3:]
+
+	if string(end) != "foo" {
+		t.Errorf("Expected the README.md file to have been appended, 'foo'")
+	} else {
+		os.Remove("README.md")
+		// Create new README.md file
+		ioutil.WriteFile("README.md", []byte(old), 0666)
+	}
+
 }
