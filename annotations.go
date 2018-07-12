@@ -9,6 +9,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 var dirflag string
@@ -21,14 +23,14 @@ func init() {
 
 type annotation struct {
 	path string
-	todo string
+	item string
 }
 
 func main() {
 	flag.Parse()
 	f := findFiles(dirflag)
 	a := findAnnotations(f)
-	l := buildList(a)
+	l := buildAndLogList(a)
 	appendReadme(l)
 }
 
@@ -80,39 +82,49 @@ func skipped(name string, dir bool) bool {
 
 func findAnnotations(files []string) map[string][]annotation {
 	annotations := map[string][]annotation{
-		"TODOS":    {},
-		"FIXME":    {},
-		"REFACTOR": {},
+		"TODO":  {},
+		"FIXME": {},
 	}
 	for _, file := range files {
 		openFile, _ := os.Open(file)
 		scanner := bufio.NewScanner(openFile)
 		for scanner.Scan() {
-			if strings.Contains(string(scanner.Text()), "TODO:") {
-				annotations["TODOS"] = append(annotations["TODOS"],
-					annotation{path: file, todo: strings.TrimPrefix(string(scanner.Text()), "// TODO: ")})
+			line := string(scanner.Text())
+			if strings.Contains(line, "TODO:") {
+				todo := strings.Split(line, "TODO: ")
+				annotations["TODO"] = append(annotations["TODO"],
+					annotation{path: file, item: todo[1]})
 			}
-			if strings.Contains(string(scanner.Text()), "FIXME:") {
+			if strings.Contains(line, "FIXME:") {
+				fixme := strings.Split(line, "FIXME: ")
 				annotations["FIXME"] = append(annotations["FIXME"],
-					annotation{path: file, todo: strings.TrimPrefix(string(scanner.Text()), "// FIXME: ")})
-			}
-			if strings.Contains(string(scanner.Text()), "REFACTOR") {
-				annotations["REFACTOR"] = append(annotations["REFACTOR"],
-					annotation{path: file, todo: strings.TrimPrefix(string(scanner.Text()), "// REFACTOR: ")})
+					annotation{path: file, item: fixme[1]})
 			}
 		}
 	}
 	return annotations
 }
 
-func buildList(notes map[string][]annotation) string {
+func buildAndLogList(notes map[string][]annotation) string {
 	list := "\n## ANNOTATIONS\n"
+	green := color.New(color.FgGreen).SprintFunc()
+	red := color.New(color.FgRed).SprintFunc()
+	blue := color.New(color.FgCyan).SprintFunc()
+	white := color.New(color.FgWhite).SprintFunc()
 	for i, n := range notes {
 		if len(n) > 0 {
+			fmt.Printf("%v:\n", i)
 			list = list + "### " + i + ":\n"
 			for _, a := range n {
-				list = list + "* [" + a.todo + "](" + a.path + ")\n"
+				list = list + "* [" + a.item + "](" + a.path + ")\n"
+				if i == "TODO" {
+					fmt.Printf("%s %s %s %s\n", white("*"), green(a.item), white(" - "), blue(a.path))
+				}
+				if i == "FIXME" {
+					fmt.Printf("%s %s %s %s\n", white("*"), red(a.item), white("-"), blue(a.path))
+				}
 			}
+			println()
 			list = list + "\n"
 		}
 	}
