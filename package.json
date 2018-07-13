@@ -1,0 +1,16 @@
+{
+  "name": "annotationfinder",
+  "version": "1.0.0",
+  "description": "Executable file which finds all your // TODO and // FIXME annotation comments within your directory, log them out, and append them to your README.md file.",
+  "main": "annotations.go",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kgwebsites/annotationFinder.git"
+  },
+  "author": "Kyle Goss",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kgwebsites/annotationFinder/issues"
+  },
+  "homepage": "https://github.com/kgwebsites/annotationFinder#readme"
+}
