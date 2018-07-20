@@ -15,12 +15,18 @@ import (
 
 var dirflag string
 var fileflag string
+var appendflag bool
 var outputflag string
 
 func init() {
-	flag.StringVar(&dirflag, "dir", "./", "Directory of files you wish to search for annotations")
-	flag.StringVar(&fileflag, "file", "", "Single file you wish to search for annotations")
-	flag.StringVar(&outputflag, "o", "README.md", "Markdown file you wish append annotations to")
+	flag.StringVar(&dirflag, "d", "./", "[shorthand] Directory of files you wish to search for annotations")
+	flag.StringVar(&dirflag, "directory", "./", "[verbose] Directory of files you wish to search for annotations")
+	flag.StringVar(&fileflag, "f", "", "[shorthand] Single file you wish to search for annotations")
+	flag.StringVar(&fileflag, "file", "", "[verbose] Single file you wish to search for annotations")
+	flag.BoolVar(&appendflag, "a", false, "[shorthand] Pass in this flag if you want to append annotations to a markdown file")
+	flag.BoolVar(&appendflag, "append", false, "[verbose] Pass in this flag if you want to append annotations to a markdown file")
+	flag.StringVar(&outputflag, "o", "README.md", "[shorthand] Markdown file you wish append annotations to")
+	flag.StringVar(&outputflag, "output", "README.md", "[verbose] Markdown file you wish append annotations to")
 }
 
 type annotation struct {
@@ -33,7 +39,9 @@ func main() {
 	f := findFiles(dirflag)
 	a := findAnnotations(f)
 	l := buildAndLogList(a)
-	output(l)
+	if appendflag {
+		output(l)
+	}
 }
 
 func findFiles(dir string) []string {
@@ -120,7 +128,7 @@ func buildAndLogList(notes map[string][]annotation) string {
 			for _, a := range n {
 				list = list + "* [" + a.item + "](" + a.path + ")\n"
 				if i == "TODO" {
-					fmt.Printf("%s %s %s %s\n", white("*"), green(a.item), white(" - "), blue(a.path))
+					fmt.Printf("%s %s %s %s\n", white("*"), green(a.item), white("-"), blue(a.path))
 				}
 				if i == "FIXME" {
 					fmt.Printf("%s %s %s %s\n", white("*"), red(a.item), white("-"), blue(a.path))

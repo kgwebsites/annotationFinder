@@ -14,13 +14,21 @@ You have 3 options here.
 
 To use simply call the executable in this package `annotations` (mac / linux) or `annotations.exe` (windows).
 
-You can change the directory set to search for annotations by using the dir flag. For example:
-`./annotations -dir="./testdata"` (mac / linux)
-`./annotations.exe -dir="./testdata"` (windows)
+You can change the directory set to search for annotations by using the directory flag:
+`./annotations -d="./testdata"` || `./annotations -directory="./testdata"` (mac / linux)
+`./annotations.exe -d="./testdata" || `./annotations.exe -directory="./testdata"` (windows)
 
-You can also use this for a single file by using the file flag.
-`./annotations -file="./testdata/foo"` (mac / linux)
-`./annotations -file="./testdata/foo"` (windows)
+You can also use this for a single file by using the file flag:
+`./annotations -f="./testdata/foo"` || `./annotations -file="./testdata/foo"` (mac / linux)
+`./annotations.exe -f="./testdata/foo"` || `./annotations.exe -file="./testdata/foo"` (windows)
+
+If you want your annotations to be appended to the end of the README.md file in the current directory in markdown format, pass in the append flag:
+`./annotations -a` || `./annotations -append (mac / linux)
+`./annotations.exe -a` || `./annotations.exe -append (windows)
+
+To specify the file which the appending is done, pass in the output flag:
+`./annotations -a -o "SECONDARYREADME.md"` || `./annotations -append -output "SECONDARYREADME.md" (mac / linux)
+`./annotations.exe -a -o "SECONDARYREADME.md"` || `./annotations.exe -append -output "SECONDARYREADME.md" (windows)
 
 ## Contributing
 
