@@ -1,6 +1,6 @@
 # Annotation Finder
 
-Executable file which finds all your // TODO and // FIXME annotation comments within your directory and appends them to your README.md file.
+Executable file which finds all your // TODO and // FIXME annotation comments within your directory and can append them to a markdown file.
 
 ## Installation
 
@@ -14,29 +14,49 @@ You have 3 options here.
 
 To use simply call the executable in this package `annotations` (mac / linux) or `annotations.exe` (windows).
 
-You can change the directory set to search for annotations by using the directory flag:
+By default the file will execute in the directory you are calling it from. You can change the directory set to search for annotations by using the directory flag:
+
 mac / linux
-```$ ./annotations -d="./testdata" OR $ ./annotations -directory="./testdata"```
+```
+$ ./annotations -d="./testdata" OR $ ./annotations -directory="./testdata"
+```
 windows
-```./annotations.exe -d="./testdata" OR $ `./annotations.exe -directory="./testdata"```
+```
+./annotations.exe -d="./testdata" OR $ ./annotations.exe -directory="./testdata"
+```
 
 You can also use this for a single file by using the file flag:
+
 mac / linux
-```$ ./annotations -f="./testdata/foo"` OR $ ./annotations -file="./testdata/foo"```
+```
+$ ./annotations -f="./testdata/foo" OR $ ./annotations -file="./testdata/foo"
+```
 windows
-```$ ./annotations.exe -f="./testdata/foo"` OR $ ./annotations.exe -file="./testdata/foo"```
+```
+$ ./annotations.exe -f="./testdata/foo" OR $ ./annotations.exe -file="./testdata/foo"
+```
 
 If you want your annotations to be appended to the end of the README.md file in the current directory in markdown format, pass in the append flag:
-mac / linux
-```$ ./annotations -a OR ./annotations -append```
-windows
-```$ ./annotations.exe -a OR $ ./annotations.exe -append```
 
-To specify the file which the appending is done, pass in the output flag:
 mac / linux
-```$ ./annotations -a -o "SECONDARYREADME.md" OR $ ./annotations -append -output "SECONDARYREADME.md"```
+```
+$ ./annotations -a OR ./annotations -append
+```
 windows
-```$ ./annotations.exe -a -o "SECONDARYREADME.md" OR $ ./annotations.exe -append -output "SECONDARYREADME.md"```
+```
+$ ./annotations.exe -a OR $ ./annotations.exe -append
+```
+
+By default, if the append flag is used, the results will be appended to the end of the README.md file in the current directory. If there isn't one, one is created. To specify the file which the appending is done, pass in the output flag:
+
+mac / linux
+```
+$ ./annotations -a -o="SECONDARYREADME.md" OR $ ./annotations -append -output="SECONDARYREADME.md"
+```
+windows
+```
+$ ./annotations.exe -a -o="SECONDARYREADME.md" OR $ ./annotations.exe -append -output="SECONDARYREADME.md"
+```
 
 ## Contributing
 
