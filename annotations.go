@@ -123,10 +123,10 @@ func findAnnotations(files []string) map[string][]annotation {
 
 func buildAndLogList(notes map[string][]annotation) string {
 	list := "\n## ANNOTATIONS\n"
-	green := color.New(color.FgGreen).SprintFunc()
-	red := color.New(color.FgRed).SprintFunc()
-	blue := color.New(color.FgCyan).SprintFunc()
-	white := color.New(color.FgWhite).SprintFunc()
+	green := color.New(color.FgHiGreen).SprintFunc()
+	red := color.New(color.FgHiRed).SprintFunc()
+	blue := color.New(color.FgHiCyan).SprintFunc()
+	white := color.New(color.FgHiWhite).SprintFunc()
 	for i, n := range notes {
 		if len(n) > 0 {
 			fmt.Printf("%v:\n", i)
