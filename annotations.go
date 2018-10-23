@@ -17,6 +17,7 @@ var dirflag string
 var fileflag string
 var appendflag bool
 var outputflag string
+var rejectfixmeflag bool
 
 func init() {
 	flag.StringVar(&dirflag, "d", "./", "[shorthand] Directory of files you wish to search for annotations")
@@ -27,6 +28,8 @@ func init() {
 	flag.BoolVar(&appendflag, "append", false, "[verbose] Pass in this flag if you want to append annotations to a markdown file")
 	flag.StringVar(&outputflag, "o", "README.md", "[shorthand] Markdown file you wish append annotations to")
 	flag.StringVar(&outputflag, "output", "README.md", "[verbose] Markdown file you wish append annotations to")
+	flag.BoolVar(&rejectfixmeflag, "rf", false, "[shorthand] Option to return error if a fix me is found.")
+	flag.BoolVar(&rejectfixmeflag, "rejectfixme", false, "[verbose] Option to return error if a fix me is found.")
 }
 
 type annotation struct {
@@ -41,6 +44,9 @@ func main() {
 	l := buildAndLogList(a)
 	if appendflag {
 		output(l)
+	}
+	if rejectfixmeflag {
+		rejectFixme(a)
 	}
 }
 
@@ -167,5 +173,25 @@ func output(list string) {
 	}
 	if err := f.Close(); err != nil {
 		log.Fatal(err)
+	}
+}
+
+func rejectFixme(notes map[string][]annotation) {
+	fixmeExist := false
+	red := color.New(color.FgRed).SprintFunc()
+	blue := color.New(color.FgCyan).SprintFunc()
+	white := color.New(color.FgWhite).SprintFunc()
+	list := "\nFix the following FIXMEs before continuing: \n"
+	for i, n := range notes {
+		for _, a := range n {
+			if i == "FIXME" {
+				fixmeExist = true
+				list = fmt.Sprintf("%s %s %s %s %s\n", list, white("*"), red(a.item), white("-"), blue(a.path))
+			}
+
+		}
+	}
+	if fixmeExist {
+		log.Fatal(list)
 	}
 }
