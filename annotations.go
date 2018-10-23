@@ -178,10 +178,10 @@ func output(list string) {
 
 func rejectFixme(notes map[string][]annotation) {
 	fixmeExist := false
-	red := color.New(color.FgRed).SprintFunc()
-	blue := color.New(color.FgCyan).SprintFunc()
-	white := color.New(color.FgWhite).SprintFunc()
-	list := "\nFix the following FIXMEs before continuing: \n"
+	red := color.New(color.FgHiRed).SprintFunc()
+	blue := color.New(color.FgHiCyan).SprintFunc()
+	white := color.New(color.FgHiWhite).SprintFunc()
+	list := "Fix the following FIXMEs before continuing: \n\n"
 	for i, n := range notes {
 		for _, a := range n {
 			if i == "FIXME" {
@@ -192,6 +192,6 @@ func rejectFixme(notes map[string][]annotation) {
 		}
 	}
 	if fixmeExist {
-		log.Fatal(list)
+		log.Fatalf("\n\n========================================================================\n\n%s \n========================================================================\n\n", list)
 	}
 }
