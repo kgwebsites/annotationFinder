@@ -29,7 +29,7 @@ func init() {
 	flag.StringVar(&outputflag, "o", "README.md", "[shorthand] Markdown file you wish append annotations to")
 	flag.StringVar(&outputflag, "output", "README.md", "[verbose] Markdown file you wish append annotations to")
 	flag.BoolVar(&rejectfixmeflag, "rf", false, "[shorthand] Option to return error if a fix me is found.")
-	flag.BoolVar(&rejectfixmeflag, "rejectfixmeflag", false, "[verbose] Option to return error if a fix me is found.")
+	flag.BoolVar(&rejectfixmeflag, "rejectfixme", false, "[verbose] Option to return error if a fix me is found.")
 }
 
 type annotation struct {

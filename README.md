@@ -58,6 +58,17 @@ windows
 $ ./annotations.exe -a -o="SECONDARYREADME.md" OR $ ./annotations.exe -append -output="SECONDARYREADME.md"
 ```
 
+If you want an error to be thrown if a FIXME is found, pass in the rejectfixme flag:
+
+mac / linux
+```
+$ ./annotations -rf OR ./annotations -rejectfixme
+```
+windows
+```
+$ ./annotations.exe -rf OR ./annotations.exe -rejectfixme
+```
+
 ## Contributing
 
 All contributions are welcome and appreciated!
