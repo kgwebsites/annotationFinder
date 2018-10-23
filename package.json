@@ -1,6 +1,6 @@
 {
   "name": "annotationfinder",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Executable file which finds all your // TODO and // FIXME annotation comments within your directory, log them out, and append them to your README.md file.",
   "main": "annotations.go",
   "repository": {
